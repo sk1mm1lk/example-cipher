@@ -13,8 +13,55 @@ def print_help():
     return None
 
 def encrypt(key_string, plaintext):
-    # TODO
-    return "TODO"
+    p = ''
+    k = ''
+    P = ''
+    K = ''
+    I = 0
+    j = 0
+    C = 0
+    c = ''
+    ciphertext = ''
+
+    for i in range(len(plaintext)):
+        p = ord(plaintext[i])
+        P = p - 33
+        
+        j = i % len(key_string)
+
+        k = ord(key_string[j])
+        K = k - 33
+
+        I = i + 1
+
+        C = P + ((2 * K * I) % 94)
+
+        c = chr((C % 94)+ 33)
+
+        ciphertext += c
+    return ciphertext
+
+def decrypt(key_string, ciphertext):
+    p, P, k, P, c, C, I = 0, 0, 0, 0, 0, 0, 0
+    plaintext = ''
+
+    for i in range(len(ciphertext)):
+        C = ord(ciphertext[i])
+        c = C - 33
+        
+        j = i % len(key_string)
+
+        k = ord(key_string[j])
+        K = k - 33
+
+        I = i + 1
+
+        P = C - ((2* K * I) % 94)
+
+        p = chr((P + 33) % 94)
+
+        plaintext += p
+    return plaintext
 
 def encrypt_file(key_string, filename):
     if (exists(filename)):
@@ -58,6 +105,10 @@ def main():
             print("===== CIPHERTEXT =====")
             print(ciphertext)
             print("===== CIPHERTEXT =====")
+            plaintext = decrypt(key_string, file)
+            print("===== PLAINTEXT =====")
+            print(plaintext)
+            print("===== PLAINTEXT =====")
 
 if (__name__ == "__main__"):
     main()
