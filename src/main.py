@@ -3,112 +3,74 @@
 # David Dudov
 # 2022
 
-# SimpleCryptTool
-
 import sys
-from os.path import exists
+
+PRIME = 111191111
 
 def print_help():
-    print("usage: " + sys.argv[0] + " <key/file> <plaintext/file> [other files]")
+    print("usage: " + sys.argv[0] + " <key> <plaintext> <e|d>")
+    print("    where e = encrypt")
+    print("          d = decrypt")
     return None
 
-def encrypt(key_string, plaintext):
-    p = ''
-    k = ''
-    P = ''
-    K = ''
-    I = 0
-    j = 0
-    C = 0
-    c = ''
-    ciphertext = ''
+def encrypt(key, plaintext):
+    key_length    = len(plaintext)
+    string_length = len(plaintext)
 
-    for i in range(len(plaintext)):
-        p = ord(plaintext[i])
-        P = p - 33
-        
-        j = i % len(key_string)
+    key_string = ""
+    key_index = 0
 
-        k = ord(key_string[j])
-        K = k - 33
+    if (key_length < string_length):
+        for i in range(string_length):
+            key_index = i % key_length
+            key_string = key_string + key[key_index]
 
-        I = i + 1
+def decrypt(key, ciphertext):
+    key_length    = len(plaintext)
+    string_length = len(plaintext)
 
-        C = P + ((2 * K * I) % 94)
+    key_string = ""
+    key_index = 0
 
-        c = chr((C % 94)+ 33)
-
-        ciphertext += c
-    return ciphertext
-
-def decrypt(key_string, ciphertext):
-    p, P, k, P, c, C, I = 0, 0, 0, 0, 0, 0, 0
-    plaintext = ''
-
-    for i in range(len(ciphertext)):
-        C = ord(ciphertext[i])
-        c = C - 33
-        
-        j = i % len(key_string)
-
-        k = ord(key_string[j])
-        K = k - 33
-
-        I = i + 1
-
-        P = C - ((2* K * I) % 94)
-
-        p = chr((P + 33) % 94)
-
-        plaintext += p
-    return plaintext
-
-def encrypt_file(key_string, filename):
-    if (exists(filename)):
-        f = open(filename, "r")
-        plaintext = f.read()
-        f.close()
-
-        ciphertext = encrypt(key_string, plaintext)
-        return ciphertext
-    else:
-        ciphertext = encrypt(key_string, filename)
-        return ciphertext
+    if (key_length < string_length):
+        for i in range(string_length):
+            key_index = i % key_length
+            key_string = key_string + key[key_index]
 
 def main():
     argc = len(sys.argv)
     
-    if (argc < 3):
+    if (argc == 4):
         print_help()
         return None
 
     key = sys.argv[1]
-    files = sys.argv[2:]
+    plaintext = sys.argv[2]
 
-    is_key_file = exists(key)
+    if (argv[3] == "e"):
+        ciphertext = encrypt(key, plaintext)
 
-    if (is_key_file):
-        f = open(key, "r")
-        key_string = f.read()
-        f.close()
+        print("===== CIPHERTEXT =====")
+        print(ciphertext)
+        print("===== CIPHERTEXT =====")
+    elif (argv[3] == "d"):
+        plaintext = decrypt(key, plaintext)
+
+        print("===== PLAINTEXT =====")
+        print(plaintext)
+        print("===== PLAINTEXT =====")
     else:
-        key_string = key
+        ciphertext = encrypt(key, plaintext)
 
-    for file in files:
-        if (exists(file)):
-            ciphertext = encrypt_file(key_string, file)
-            f = open((file + ".sct"), "w")
-            f.write(ciphertext)
-            f.close()
-        else:
-            ciphertext = encrypt(key_string, file)
-            print("===== CIPHERTEXT =====")
-            print(ciphertext)
-            print("===== CIPHERTEXT =====")
-            plaintext = decrypt(key_string, file)
-            print("===== PLAINTEXT =====")
-            print(plaintext)
-            print("===== PLAINTEXT =====")
+        print("===== CIPHERTEXT =====")
+        print(ciphertext)
+        print("===== CIPHERTEXT =====")
+
+        plaintext = decrypt(key, plaintext)
+
+        print("===== PLAINTEXT =====")
+        print(plaintext)
+        print("===== PLAINTEXT =====")
 
 if (__name__ == "__main__"):
     main()
