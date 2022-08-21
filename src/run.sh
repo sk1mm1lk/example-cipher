@@ -1,1 +1,1 @@
-./main.out $(cat plaintext.txt) $(cat key.txt)
+python main.py $(cat plaintext.txt) $(cat key.txt) e
