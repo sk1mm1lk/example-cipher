@@ -8,11 +8,11 @@ import base64
 
 PRIME = 111191111
 # CHAR = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
-CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 N_CHAR = len(CHAR)
 
 def print_help():
-    print("usage: " + sys.argv[0] + " <key> <plaintext>")
+    print("usage: " + sys.argv[0] + " <key> <plaintext file> <e|d>")
     return None
 
 def get_char(index):
@@ -27,9 +27,20 @@ def get_index(char):
     print("Character not in character set")
     exit()
 
+def clean_input(input_text):
+    for ch in list(input_text):
+        if ch not in CHAR:
+            input_text = input_text.replace(ch, "")
+
+    return input_text
+
 def encrypt(key, plaintext):
-    key_length    = len(key)
+    key_length = len(key)
+    f = open(plaintext)
+    plaintext = f.read()
+    f.close()
     plaintext = base64.b64encode(plaintext.encode('ascii')).decode().replace("=", "")
+    plaintext = clean_input(plaintext)
     string_length = len(plaintext)
 
     ciphertext = ""
@@ -47,6 +58,10 @@ def encrypt(key, plaintext):
 
 def decrypt(key, ciphertext):
     key_length    = len(key)
+    f = open(ciphertext)
+    ciphertext = f.read()
+    f.close()
+    ciphertext = clean_input(ciphertext)
     string_length = len(ciphertext)
 
     plaintext = ""
@@ -59,7 +74,7 @@ def decrypt(key, ciphertext):
 
         plaintext += get_char((ch - subtraction) % N_CHAR)
 
-    plaintext += "=="
+    plaintext += (len(plaintext) % 4) * "="
     plaintext = base64.b64decode(plaintext.encode('ascii')).decode()
     return plaintext
 
@@ -76,15 +91,13 @@ def main():
 
     if ("e" in list(mode)):
         ciphertext = encrypt(key, plaintext)
-
-        print("===== CIPHERTEXT =====")
         print(ciphertext)
-        print("===== CIPHERTEXT =====")
     
-    else:
+    elif ("d" in list(mode)):
         plaintext = decrypt(key, plaintext)
-        print("===== PLAINTEXT =====")
         print(plaintext)
-        print("===== PLAINTEXT =====")
+
+    else:
+        print_help()
 if (__name__ == "__main__"):
     main()
