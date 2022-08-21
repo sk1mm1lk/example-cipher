@@ -1,1 +1,2 @@
+The text can be put into python and will provide you with all the readable ascii characters
 '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
